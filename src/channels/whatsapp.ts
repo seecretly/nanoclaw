@@ -6,6 +6,7 @@ import makeWASocket, {
   Browsers,
   DisconnectReason,
   WASocket,
+  fetchLatestBaileysVersion,
   makeCacheableSignalKeyStore,
   useMultiFileAuthState,
 } from '@whiskeysockets/baileys';
@@ -55,11 +56,13 @@ export class WhatsAppChannel implements Channel {
 
     const { state, saveCreds } = await useMultiFileAuthState(authDir);
 
+    const { version } = await fetchLatestBaileysVersion();
     this.sock = makeWASocket({
       auth: {
         creds: state.creds,
         keys: makeCacheableSignalKeyStore(state.keys, logger),
       },
+      version,
       printQRInTerminal: false,
       logger,
       browser: Browsers.macOS('Chrome'),
